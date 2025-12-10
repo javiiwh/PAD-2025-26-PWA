@@ -2,6 +2,8 @@ import axios from "axios"
 
 const GOOGLE_BOOKS_API_BASE = "https://www.googleapis.com/books/v1/volumes"
 
+import type { Book } from "@/types"
+
 export interface GoogleBook {
     id: string
     volumeInfo: {
@@ -16,6 +18,7 @@ export interface GoogleBook {
         }
         publishedDate?: string
         pageCount?: number
+        infoLink?: string
     }
 }
 
@@ -40,7 +43,7 @@ export async function searchBooks(query: string): Promise<BookSearchResponse> {
     }
 }
 
-export function transformGoogleBook(book: GoogleBook) {
+export function transformGoogleBook(book: GoogleBook): Book {
     const { volumeInfo } = book
     return {
         id: book.id,
@@ -48,6 +51,7 @@ export function transformGoogleBook(book: GoogleBook) {
         author: volumeInfo.authors?.join(", "),
         description: volumeInfo.description,
         image: volumeInfo.imageLinks?.thumbnail || volumeInfo.imageLinks?.small,
+        infoLink: volumeInfo.infoLink,
         publishedDate: volumeInfo.publishedDate,
         pageCount: volumeInfo.pageCount,
     }

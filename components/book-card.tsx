@@ -1,8 +1,9 @@
 "use client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Image from "next/image";
+import type { Book } from "@/types"
 
-interface BookCardProps {
+interface BookCardProps extends Partial<Book> {
     id: string
     title: string
     author?: string
@@ -10,24 +11,27 @@ interface BookCardProps {
     image?: string
     publishedDate?: string
     pageCount?: number
-    onOpen?: (book: { id: string; title: string; author?: string; description?: string; image?: string; publishedDate?: string; pageCount?: number }) => void
+    infoLink?: string
+    onOpen?: (book: Book) => void
 }
 
-export function BookCard({ id, title, author, description, image, publishedDate, pageCount, onOpen }: BookCardProps) {
+export function BookCard({ id, title, author, description, image, publishedDate, pageCount, infoLink, onOpen }: BookCardProps) {
     const handleOpen = () => {
         if (onOpen) {
-            onOpen({ id, title, author, description, image, publishedDate, pageCount })
+            onOpen({ id, title, author, description, image, publishedDate, pageCount, infoLink })
         }
     }
 
     return (
         <Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition-shadow duration-200">
-            <button onClick={handleOpen} className="text-left flex-1 flex flex-col">
+            <button onClick={handleOpen} className="text-left flex-1 flex flex-col hover:cursor-pointer">
                 <div className="relative h-40 sm:h-48 bg-muted overflow-hidden flex-shrink-0">
                     {image ? (
                         <Image
                             src={image || "/placeholder.svg"}
                             alt={title}
+                            width={256}
+                            height={256}
                             className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
                             loading="lazy"
                             onError={(e) => {

@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react"
 import { SearchBar } from "@/components/search-bar"
-import { BookGrid, type Book } from "@/components/book-grid"
-import { getRecentBooks, addRecentBook, StoredBook } from "@/lib/storage"
+import { BookGrid } from "@/components/book-grid"
+import { getRecentBooks, addRecentBook } from "@/lib/storage"
+import type { Book, StoredBook } from "@/types"
 import { searchBooks, transformGoogleBook } from "@/lib/google-books-api"
 import { Button } from "@/components/ui/button"
 import { AlertCircle, RefreshCw, Info } from "lucide-react"
@@ -69,6 +70,7 @@ export default function Home() {
                         author: b.author,
                         description: b.description,
                         image: b.image,
+                        infoLink: b.infoLink,
                         publishedDate: b.publishedDate,
                         pageCount: b.pageCount,
                     })
@@ -89,6 +91,16 @@ export default function Home() {
     const handleOpenBook = (book: StoredBook) => {
         const updated = addRecentBook(book)
         setRecentBooks(updated)
+
+        if (book.infoLink) {
+            const url = book.infoLink
+            const width = 900
+            const height = 700
+            const left = Math.floor((window.screen.width - width) / 2)
+            const top = Math.floor((window.screen.height - height) / 2)
+            const features = `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes,noopener,noreferrer`
+            window.open(url, 'book-popup', features)
+        }
     }
 
     const handleRetry = () => {
@@ -145,7 +157,7 @@ export default function Home() {
                             </h2>
                         </div>
                     )}
-                    <BookGrid books={books} isLoading={isLoading} onOpen={handleOpenBook} />
+                    <BookGrid books={books} isLoading={isLoading} onOpen={handleOpenBook} isInitial={currentQuery === "" && books.length === 0 && !isLoading} />
                 </div>
 
                 {recentBooks.length > 0 && books.length === 0 && (

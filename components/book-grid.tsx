@@ -3,24 +3,16 @@
 import { BookCard } from "./book-card"
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription, EmptyMedia } from "@/components/ui/empty"
 import { BookOpen } from "lucide-react"
-
-export interface Book {
-    id: string
-    title: string
-    author?: string
-    description?: string
-    image?: string
-    publishedDate?: string
-    pageCount?: number
-}
+import type { Book } from "@/types"
 
 interface BookGridProps {
     books: Book[]
     isLoading?: boolean
     onOpen?: (book: Book) => void
+    isInitial?: boolean
 }
 
-export function BookGrid({ books, isLoading, onOpen }: BookGridProps) {
+export function BookGrid({ books, isLoading, onOpen, isInitial }: BookGridProps) {
     if (isLoading) {
         return (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6">
@@ -38,9 +30,11 @@ export function BookGrid({ books, isLoading, onOpen }: BookGridProps) {
                     <BookOpen className="w-8 h-8" />
                 </EmptyMedia>
                 <EmptyHeader>
-                    <EmptyTitle>No se encontraron libros</EmptyTitle>
+                    <EmptyTitle>{isInitial ? "Busca tu primer libro" : "No se encontraron libros"}</EmptyTitle>
                     <EmptyDescription>
-                        Intenta buscar otro título, autor o palabra clave. Tus búsquedas recientes se guardan sin conexión.
+                        {isInitial
+                            ? "Introduce un título, autor o palabra clave para buscar libros. Tus búsquedas recientes se guardan sin conexión."
+                            : "Intenta buscar otro título, autor o palabra clave. Tus búsquedas recientes se guardan sin conexión."}
                     </EmptyDescription>
                 </EmptyHeader>
             </Empty>
@@ -59,6 +53,7 @@ export function BookGrid({ books, isLoading, onOpen }: BookGridProps) {
                     image={book.image}
                     publishedDate={book.publishedDate}
                     pageCount={book.pageCount}
+                    infoLink={book.infoLink}
                     onOpen={onOpen}
                 />
             ))}

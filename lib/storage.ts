@@ -1,18 +1,10 @@
+import type { StoredBook } from "@/types"
+
 const RECENT_SEARCHES_KEY = "book_search_recent"
 const MAX_RECENT_SEARCHES = 5
 
 const RECENT_BOOKS_KEY = "book_recent_books"
 const MAX_RECENT_BOOKS = 5
-
-export interface StoredBook {
-    id: string
-    title: string
-    author?: string
-    description?: string
-    image?: string
-    publishedDate?: string
-    pageCount?: number
-}
 
 export function getRecentSearches(): string[] {
     if (typeof window === "undefined") return []
