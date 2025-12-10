@@ -35,8 +35,8 @@ export default function RootLayout({
         <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)" />
         <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
         <link rel="manifest" href="manifest.json" />
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/apple-icon.png" />
+        <link rel="icon" href="favicon.ico" />
+        <link rel="apple-touch-icon" href="apple-icon.png" />
         <title>Busqueda de libros</title>
         <meta name="apple-mobile-web-app-title" content="GoogleBooks" />
     </head>
