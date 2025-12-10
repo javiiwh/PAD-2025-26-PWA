@@ -1,7 +1,7 @@
 const CACHE_NAME = "book-search-v1"
 const OFFLINE_CACHE = "offline-v1"
 
-const urlsToCache = ["/", "/index.html", "/manifest.json", "/offline.html"]
+const urlsToCache = ["./", "./index.html", "./manifest.json", "./offline.html"]
 
 // Install event
 self.addEventListener("install", (event) => {

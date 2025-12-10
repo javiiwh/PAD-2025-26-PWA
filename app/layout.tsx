@@ -22,7 +22,7 @@ export default function RootLayout({
 
     useEffect(() => {
         if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("/sw.js").catch((err) => console.log("Service Worker registration failed:", err))
+            navigator.serviceWorker.register("sw.js").catch((err) => console.log("Service Worker registration failed:", err))
         }
     }, [])
 
@@ -34,7 +34,7 @@ export default function RootLayout({
         <meta name="description" content="Busca libros por título, con soporte para modo offline" />
         <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)" />
         <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="manifest" href="manifest.json" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/apple-icon.png" />
         <title>Busqueda de libros</title>
