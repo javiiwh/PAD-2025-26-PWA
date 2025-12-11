@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Búsqueda de libros (PWA)
 
-## Getting Started
+Esta es una Progressive Web App (PWA) creada con Next.js que permite buscar libros usando la API de Google Books, guardar los últimos libros consultados en `localStorage` para acceso rápido sin conexión y ofrecer una experiencia instalable en dispositivos móviles y de escritorio.
 
-First, run the development server:
+## Qué incluye este repositorio
+
+- `app/` – Rutas y componentes principales de la app (Next.js App Router).
+- `components/` – Componentes reutilizables (barra de búsqueda, tarjetas de libro, grid, UI común).
+- `lib/` – Lógica de acceso a la API de Google Books y utilidades (`google-books-api.ts`, `storage.ts`).
+- `public/` – Activos públicos y `sw.js` (service worker).
+- `types/` – Definiciones TypeScript para `Book` y `StoredBook`.
+- `package.json` – Scripts y dependencias.
+
+### Tecnologías y dependencias principales
+
+- next 16.x
+- react 19.x
+- TypeScript
+- axios (para llamadas HTTP)
+- tailwindcss
+- next-pwa (presente en dependencias; el proyecto usa un SW manual en `public/sw.js`)
+- lucide-react para iconos
+
+## Cómo ejecutar la app (desarrollo)
+
+Este proyecto puede ejecutarse con Bun o con Node. Aquí se muestra cómo hacerlo con Bun (recomendado por el usuario):
+
+1. Instala Bun: https://bun.sh/
+2. En la raíz del proyecto, instala dependencias y ejecuta el servidor en modo desarrollo:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
+bun install
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Si prefieres Node (opcional):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Notas sobre HTTPS local
 
-## Learn More
+El script de desarrollo usa `next dev --experimental-https` ya que las PWAs requieren HTTPS para ciertas funcionalidades (service workers, instalación). En producción, GitHub Pages sirve sobre HTTPS automáticamente.
 
-To learn more about Next.js, take a look at the following resources:
+## Build y despliegue
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Generar build estático:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+bun build # si usas Bun para correr `next build` a través de npm scripts, usa: bun x npm run build
+# o con npm
+npm run build
+```
 
-## Deploy on Vercel
+2. Exportar para GitHub Pages (u otra carpeta `out`):
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run build
+npm run export # si tienes configurado un export; este proyecto usa `gh-pages -d out` en `deploy`
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Nota: El proyecto ya incluye un script `deploy` que usa `gh-pages -d out`. Ajusta según tu flujo de build/export.
+
+## Service worker y offline
+
+- El proyecto incluye un `public/sw.js` con una estrategia sencilla: precachea `./`, `./index.html`, `./manifest.json` y `./offline.html`. Maneja llamadas API con `network-first` y activos estáticos con `cache-first`.
+- Para que el sw encuentre `offline.html` en la ruta correcta tras desplegar en un subdirectorio, usa rutas relativas en `sw.js` (ya usa `"./offline.html"`) o actualiza `CACHE_NAME`/rutas en tiempo de build.
+
+## LocalStorage: últimos 5 libros
+
+- La lógica está en `lib/storage.ts`. Guarda objetos `StoredBook` completos en la clave `book_recent_books` y limita a 5 entradas.
+- Al iniciar la aplicación (`app/page.tsx`), se carga `getRecentBooks()` para mostrar las tarjetas (no solo keys).
